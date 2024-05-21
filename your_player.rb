@@ -1,3 +1,5 @@
+require './base_player.rb'
+
 class YourPlayer < BasePlayer
   def initialize(game:, name:)
     super
