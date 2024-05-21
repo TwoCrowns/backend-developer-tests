@@ -1,35 +1,31 @@
-require './base_player.rb'
+require_relative 'base_player'
 
 class YourPlayer < BasePlayer
   def initialize(game:, name:)
-    super
+    super(game: game, name: name)
     @visited = {}
     @current_position = nil
   end
 
   def next_point(time:)
-    @current_position ||= game.grid.starting_point
+    return initial_position if initial_position
 
-    dfs(game.grid, @current_position)
+    neighbors = game.grid.edges[current_position]
+    unvisited_neighbors = neighbors.keys.reject { |point| visited[point] }
+
+    if unvisited_neighbors.empty?
+      unvisited = game.grid.edges.keys - visited.keys
+      return unvisited.sample unless unvisited.empty?
+    else
+      return unvisited_neighbors.min_by { |point| game.grid.move_cost(from: current_position, to: point) }
+    end
+
+    current_position
   end
 
   private
 
-  def dfs(grid, current)
-    return current if grid.all_visited?
-
-    @visited[current] = true
-
-    neighbors = grid.edges[current]
-
-    neighbors.keys.each do |neighbor|
-      next if @visited[neighbor]
-
-      next_position = dfs(grid, neighbor)
-      return next_position if next_position
-    end
-
-    @current_position = nil
-    return nil
+  def initial_position
+    @current_position ||= { row: 0, col: 0 }
   end
 end
