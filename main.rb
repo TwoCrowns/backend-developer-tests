@@ -10,12 +10,15 @@ grid_size = 5
 your_strategy = -> {
   game = Game.new(grid_size: grid_size)
 
-  you = YourPlayer.new(game: game, name: 'YourPlayer')
+  you = YourPlayer.new(game: game, name: 'Unknown candidate')
 
   game.add_player(you)
 
   game.start
 }
+
+your_results = your_strategy.call
+puts "Your results: #{your_results}"
 
 random_strategy = -> {
   game = Game.new(grid_size: grid_size)
@@ -30,6 +33,6 @@ random_strategy = -> {
 }
 
 random_results = random_strategy.call
-your_results = your_strategy.call
+puts "Random results: #{random_results}"
 
 compare_hashes(your_results, random_results)
